@@ -23,13 +23,6 @@
   height: 100vh;
 }
 
-.color-wheel-and-text-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-
 .center-container {
   display: flex;
   flex-direction: column;

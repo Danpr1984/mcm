@@ -29,6 +29,7 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
 
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -68,42 +69,29 @@ class Color(models.Model):
     hex_code = models.CharField(max_length=7, default='#000000')
     user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
 
-class Features(models.Model):
-    acousticness = models.FloatField(null=True)
-    danceability = models.FloatField(null=True)
-    energy = models.FloatField(null=True)
-    instrumentalness = models.FloatField(null=True)
-    liveness = models.FloatField(null=True)
-    loudness = models.FloatField(null=True)
-    speechiness = models.FloatField(null=True)
-    tempo = models.FloatField(null=True)
-    valence = models.FloatField(null=True)
+    def __str__(self):
+        return self.name
 
+
+
+# watch out for validation issues on maxlength 
 class Song(models.Model):
-    id = models.CharField(max_length=255, primary_key=True)  # Using Spotify track ID as the primary key
-    name = models.CharField(max_length=100, default='Unknown Song')
+    id = models.CharField(max_length=100, primary_key=True)
+    name = models.CharField(max_length=100)
     artist = models.CharField(max_length=100)
     album = models.CharField(max_length=100)
-    duration = models.IntegerField(default=0)
-    image = models.URLField(default='')
-    features = models.OneToOneField(Features, on_delete=models.CASCADE, null=True)
+    image = models.URLField()
+    preview_url = models.URLField(null=True)
 
     def __str__(self):
-        return self.name
+        return self.name 
 
 
-class UserColorMusic(models.Model):
-    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+class AssignedSong(models.Model):
+    song = models.ForeignKey(Song, on_delete=models.CASCADE)
     color = models.ForeignKey(Color, on_delete=models.CASCADE)
-    music = models.ManyToManyField(Song)
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, blank=True, null=True, related_name="user_songs")
 
     def __str__(self):
-        return f'{self.user.username} - {self.color.name}'
+        return f"{self.song.name}"
 
-class MyModel(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.TextField()
-    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, default=1)  # Specify a default value here
-
-    def __str__(self):
-        return self.name

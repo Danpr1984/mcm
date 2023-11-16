@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import Color, Song
+from .models import Color, Song, AssignedSong
 from django.contrib.auth import get_user_model, authenticate
+from rest_framework.exceptions import ValidationError
 
 UserModel = get_user_model()
 
@@ -39,3 +40,12 @@ class SongSerializer(serializers.ModelSerializer):
         model = Song
         fields = '__all__'		
 
+
+class AssignedSongSerializer(serializers.ModelSerializer):
+	song = SongSerializer()
+	color = ColorSerializer()
+	user = UserSerializer()
+
+	class Meta:
+		model = AssignedSong
+		fields = '__all__'

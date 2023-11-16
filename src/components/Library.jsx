@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import APIKit from "./spotify.js";
-import { useNavigate, useLocation } from "react-router-dom";
-import ColorWheel, { colors } from "./ColorWheel.jsx";
+import { useLocation } from "react-router-dom";
+import { colors } from "./ColorWheel.jsx";
 import AudioPlayer from "./audioPlayer.jsx";
 import UserContext from "../UserContext.jsx";
 
@@ -19,17 +19,15 @@ function Library() {
   const [message, setMessage] = useState("");
   const { user } = useContext(UserContext);
   const [songColors, setSongColors] = useState({});
-  const [testingAudioSave, setTestingAudioSave] = useState();
+  const [userSavedSongs, setUserSavedSongs] = useState();
 
   useEffect(() => {
     fetchPlaylists();
   }, []);
 
   useEffect(() => {
-    if (location.state) {
-      fetchTracks(location.state?.id);
-    }
-  }, [location.state]);
+    fetchUserTracks();
+  }, []);
 
   useEffect(() => {
     setCurrentTrack(tracks[currentIndex]?.track);
@@ -52,71 +50,17 @@ function Library() {
     }
   };
 
-  
-
-  const fetchTrackFeatures = async (trackId) => {
+  const fetchUserTracks = async (playlistId) => {
     try {
-      const response = await axios.get(`https://api.spotify.com/v1/audio-features/${trackId}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem("token")}`
-        }
-      });
+      const response = await fetch("http://localhost:8000/api/songs");
 
-      console.log('Response data:', response.data);
+      const { user_songs } = await response.json();
 
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching track features:', error);
-      throw error;
-    }
-  };
-
-
-  const fetchTracks = async (playlistId) => {
-    try {
-      const res = await APIKit.get("playlists/" + playlistId + "/tracks");
-      setTracks(res.data.items);
-      setCurrentTrack(res.data?.items[0]?.track);
-
-      // Save the tracks to your database
-      for (const item of res.data.items) {
-        const track = item.track;
-        let features;
-        try {
-          features = await fetchTrackFeatures(track.id); 
-          console.log(features);
-        } catch (error) {
-          console.error('Error fetching features for track:', track.id);
-        }
-        await axios.post(
-          "http://localhost:8000/api/songs/",
-          {
-            id: track.id,
-            name: track.name,
-            artist: track.artists[0].name,
-            album: track.album.name,
-            duration: track.duration_ms,
-            image: track.album.images[0].url,
-            features: features // Save the features to your database
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-
-        // Verify that the song was stored correctly
-        const response = await axios.get(
-          `http://localhost:8000/api/songs/${track.id}`
-        );
-        console.log("Stored song:", response.data.song);
-      }
+      setUserSavedSongs(user_songs);
     } catch (error) {
       console.error("Error fetching tracks:", error);
     }
   };
-
 
   const handlePlaylistClick = (playlistId) => {
     setSelectedPlaylist((prevPlaylistId) =>
@@ -124,64 +68,12 @@ function Library() {
     );
   };
 
-  // const assignColorToSong = async (userId, colorId, songId) => {
-  //   const response = await fetch(
-  //     "http://localhost:8000/api/assign_color_to_song/",
-  //     {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`, // Get the token from local storage
-  //       },
-  //       body: JSON.stringify({
-  //         user_id: userId,
-  //         color_id: colorId,
-  //         song_id: songId,
-  //       }),
-  //     }
-  //   );
-
-  //   if (!response.ok) {
-  //     throw new Error(`HTTP error! status: ${response.status}`);
-  //   }
-
-  //   const data = await response.json();
-  //   console.log(
-  //     `Assigned color with ID ${colorId} to song with ID ${songId} for user with ID ${userId}`
-  //   );
-  //   console.log(data);
-
-  //   // Update the songColors state variable
-  //   setSongColors((prevSongColors) => ({
-  //     ...prevSongColors,
-  //     [songId]: colorId,
-  //   }));
-  // };
-
   const handleAssignColorClick = (event, track) => {
     event.stopPropagation();
     setSelectedTrack(track); // Set the selected track
-    // console.log(track.track.id);
-    // setOpenColorPanels((prevState) => {
-    //   console.log(prevState);
-    //   if (prevState.includes(track.track.id)) {
-    //     return prevState.filter(
-    //       (prevTrack) => prevTrack.id.id !== track.track.id
-    //     );
-    //   } else {
-    //     // Otherwise, open it
-    //     return [...prevState, track];
-    //   }
-    // });
   };
 
   const handleColorAssign = async (color) => {
-    // console.log(
-    //   "handleColorAssign called with color:",
-    //   color,
-    //   "and selectedTrack:",
-    //   selectedTrack
-    // );
     if (!selectedTrack) return;
 
     // USER IS NULL DUE TO CONTEXT ISSUES
@@ -189,38 +81,18 @@ function Library() {
       color: color,
       track: selectedTrack,
     };
-    setTestingAudioSave(data);
 
-    // await assignColorToSong(userId, colorId, songId);
-
-    // Save the color ID to the database
-    //   axios
-    //     .post(
-    //       "/api/colors",
-    //       { colorId: color.id },
-    //       {
-    //         headers: {
-    //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //         },
-    //       }
-    //     )
-    //     .then((response) => {
-    //       console.log("Color ID saved successfully");
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error saving color ID:", error);
-    //     });
-
-    //   // Update the songColors state variable
-    //   setSongColors((prevSongColors) => ({
-    //     ...prevSongColors,
-    //     [colorId]: [...(prevSongColors[colorId] || []), songId],
-    //   }));
-    //   setSelectedTrack(null);
-    // }
+    const response = await fetch(
+      "http://localhost:8000/api/assign_color_to_song/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
   };
-
-  console.log(testingAudioSave);
 
   const handlePlaySong = (track, index) => {
     setCurrentTrack(track);
@@ -228,21 +100,28 @@ function Library() {
     setIsPlaying(true);
   };
 
-  console.log(testingAudioSave);
+  console.log(userSavedSongs);
 
   return (
     <>
-      <h1 style={{ fontFamily: "'Raleway', sans-serif" }}>Mood, Music & Color Wheel</h1>
-      {testingAudioSave && (
-        <>
-          <p>{testingAudioSave.color.name}</p>
-          <AudioPlayer
-            track={testingAudioSave.track.track}
-            // isPlaying={isPlaying && currentTrack === track.track.id}
-            onPlay={() => handlePlaySong(testingAudioSave.track.track, 1)}
-          />
-        </>
-      )}
+      <h1>Saved to DB</h1>
+      {userSavedSongs &&
+        userSavedSongs.map((song, index) => {
+          return (
+            <div key={index}>
+              <div style={{ background: song.color.hex_code, padding: "1rem" }}>
+                <h2 style={{ color: "white" }}>{song.color.name}</h2>
+              </div>
+              <div>{song.user.email}</div>
+              <AudioPlayer
+                track={song.song}
+                isPlaying={isPlaying && currentTrack === song.song.id}
+                onPlay={() => handlePlaySong(song.song, index)}
+              />
+            </div>
+          );
+        })}
+
       <div className="sidebar-container">
         <div className="library-body">
           {playlists?.map((playlist) => (
@@ -295,9 +174,10 @@ function Library() {
           ))}
         </div>
       </div>
-      
-        </>
+    </>
   );
 }
 
 export default Library;
+
+// MULTIPLE PLAYLIST CODE

@@ -1,4 +1,4 @@
-from channels.routing import ProtocolTypeRouter, URLRouter
+sfrom channels.routing import ProtocolTypeRouter, URLRouter
 from django.urls import path
 from myapp.consumers import MyConsumer
 

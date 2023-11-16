@@ -89,33 +89,22 @@ const ColorWheel = () => {
         <img src={image} className="profile-img" alt="profile" />
         <Library/>
       </div>
-      <div className="color-wheel-and-text-container"> 
-      <div className="color-wheel-container  {`color-wheel-container ${isPlaying ? 'spin' : ''}`}" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div className="color-wheel-container {`color-wheel-container ${isPlaying ? 'spin' : ''}`}">
         <div className="center-container">
-          <svg width="800" height="500"> 
+          <svg width="800" height="800">
             <circle cx="250" cy="250" r="230" stroke="black" strokeWidth="2" fill="none" />
             {colors.map((color, index) => {
               const startAngle = index * segmentAngle;
               const endAngle = (index + 1) * segmentAngle;
-              const radius = 230;
-              const x1 = 250 + radius * Math.cos(startAngle);
-              const y1 = 250 + radius * Math.sin(startAngle);
-              const x2 = 250 + radius * Math.cos(endAngle);
-              const y2 = 250 + radius * Math.sin(endAngle);
-
-              const largeArcFlag = endAngle - startAngle <= Math.PI ? "0" : "1";
-
-              const d = [
-                `M 250 250`,
-                `L ${x1} ${y1}`,
-                `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
-                `Z`
-              ].join(" ");
+              const x1 = 250 + 230 * Math.cos(startAngle);
+              const y1 = 250 + 230 * Math.sin(startAngle);
+              const x2 = 250 + 230 * Math.cos(endAngle);
+              const y2 = 250 + 230 * Math.sin(endAngle);
 
               return (
-                <path
+                <polygon
                   key={color.id}
-                  d={d}
+                  points={`250,250 ${x1},${y1} ${x2},${y2}`}
                   fill={color.name}
                   onClick={() => handleColorClick(color)}
                 />
@@ -123,16 +112,9 @@ const ColorWheel = () => {
             })}
           </svg>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-        <p style={{ fontFamily: "'Raleway', sans-serif" }}>Crafting a unique musical journey🎶✨</p>
-        <p style={{ fontFamily: "'Raleway', sans-serif" }}>Daniel Porras, dapr247@gmail.com</p>
-</div>
       </div>
+      
     </div>
-    </div>
-    
-    
-    
   );
 };
 

@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework.permissions import IsAuthenticated
 from django.views.generic.base import TemplateView
-from .models import Color, MyModel
-from .serializers import UserRegisterSerializer, UserLoginSerializer, ColorSerializer, UserSerializer
+from .models import Color, AppUser, AssignedSong, Song
+from .serializers import UserRegisterSerializer, UserLoginSerializer, ColorSerializer, UserSerializer, SongSerializer, AssignedSongSerializer
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -30,21 +30,21 @@ class UserRegister(APIView):
 			return Response(serializer.data, status=status.HTTP_200_OK)
 		return Response(status=status.HTTP_400_BAD_REQUEST)
 
+
 class UserLogin(APIView):
 	permission_classes = (permissions.AllowAny,)
 	authentication_classes = (SessionAuthentication,)
 	def post(self, request):
 		data = request.data
 		assert validate_email(data)
-		assert validate_password(data)
 		serializer = UserLoginSerializer(data=data)
 		if serializer.is_valid(raise_exception=True):
 			user = serializer.check_user(data)
 			login(request, user)
-			# return Response(user, status=status.HTTP_200_OK)
-			# Redirect to the index view upon successful login
+			return Response(serializer.data, status=status.HTTP_200_OK)
 		return Response(status=status.HTTP_400_BAD_REQUEST)
-	
+
+
 			
 class UserRegistrationAPIView(APIView):
     def post(self, request):
@@ -71,30 +71,69 @@ class UserView(APIView):
 	def get(self, request):
 		serializer = UserSerializer(request.user)
 		return Response({'user': serializer.data}, status=status.HTTP_200_OK)
-	
-@api_view(['POST'])
-def assign_color_to_song(request):
-	user_id = request.data.get('user_id')
-	color_id = request.data.get('color_id')
-	song_id = request.data.get('song_id')
 
-	user = AppUser.objects.get(id=user_id)
-	color = Color.objects.get(id=color_id)
-	song = Song.objects.get(id=song_id)
-	user_color_music = UserColorMusic(user=user, color=color)
-	user_color_music.save()
-	user_color_music.music.add(song)
 
-	return Response({'message': 'Color assigned to song for user'})	
+
+class AssignColorToSong(APIView):
+	permission_classes = (permissions.AllowAny,)
+	def post(self, request):
+		# user_id = request.data.get('user_id')
+		color = request.data.get('color')
+		track = request.data.get('track')['track']
+
+
+		# Change for user context/token in the frontend
+		user_id = 'dapr247@gmail.com'
+		user = AppUser.objects.get(email=user_id)
+		color = Color.objects.get(name=color['name'])
+
+		track_id = track['id']
+		name = track['name']
+		artist = track['artists'][0]['name']
+		album = track['album']['name']
+		image = track['album']['images'][0]['url']
+		preview_url = track['preview_url']
+
+
+		song = Song(id=track_id, name=name, artist=artist, album=album, image=image, preview_url=preview_url)
+
+		song.save()
+
+
+
+		userAssignedColorValue = AssignedSong(color=color, user=user, song=song)
+
+		userAssignedColorValue.save()
+
+
+
+		return Response({'message': 'route works'})
+
+
+class UserSongList(APIView):
+	permission_classes = (permissions.AllowAny,)
+
+	def get(self, request):
+		user_id = 'dapr247@gmail.com'
+		user = AppUser.objects.get(email=user_id)
+
+
+		user_songs = user.user_songs.all()
+
+		serializer = AssignedSongSerializer(user_songs, many=True)
+
+		print(serializer.data)
+
+
+		return Response({'user_songs': serializer.data})
+
+
 	
 def color_list(request):
     colors = Color.objects.all()
     data = [{'id': color.id, 'name': color.name} for color in colors]
     return JsonResponse(data, safe=False)	
 
-from rest_framework.views import APIView
-from .models import Song
-from .serializers import SongSerializer
 
 class SongList(APIView):
     """
@@ -117,7 +156,7 @@ def get_song(request, song_id):
 		try:
 			song = Song.objects.get(id=song_id)
 			return JsonResponse({'song': song})
-		except Song.DoesNotExist:
+        except Song.DoesNotExist:
 			return JsonResponse({'error': 'Song not found'}, status=404)	
 
 	
