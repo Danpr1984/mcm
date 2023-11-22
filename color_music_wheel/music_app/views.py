@@ -81,12 +81,15 @@ class AssignColorToSong(APIView):
 		color = request.data.get('color')
 		track = request.data.get('track')['track']
 
-
 		# Change for user context/token in the frontend
 		user_id = 'dapr247@gmail.com'
 		user = AppUser.objects.get(email=user_id)
-		color = Color.objects.get(name=color['name'])
-
+		try:
+			color = Color.objects.get(name=color['name'])
+		except Color.DoesNotExist:
+			# Handle the case where the Color does not exist
+			# Add your code here to handle the exception
+			pass
 		track_id = track['id']
 		name = track['name']
 		artist = track['artists'][0]['name']
@@ -153,13 +156,13 @@ class SongList(APIView):
 
 @api_view(['GET'])
 def get_song(request, song_id):
-		try:
-			song = Song.objects.get(id=song_id)
-			return JsonResponse({'song': song})
-        except Song.DoesNotExist:
-			return JsonResponse({'error': 'Song not found'}, status=404)	
+	try:
+		song = Song.objects.get(id=song_id)
+		return JsonResponse({'song': song})
+	except Song.DoesNotExist:
+		return JsonResponse({'error': 'Song not found'}, status=404)	
 
 	
 
 class IndexView(TemplateView):
-    template_name = 'index.html'
+	template_name = 'index.html'

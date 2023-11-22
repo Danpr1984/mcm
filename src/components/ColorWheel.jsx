@@ -96,15 +96,25 @@ const ColorWheel = () => {
             {colors.map((color, index) => {
               const startAngle = index * segmentAngle;
               const endAngle = (index + 1) * segmentAngle;
-              const x1 = 250 + 230 * Math.cos(startAngle);
-              const y1 = 250 + 230 * Math.sin(startAngle);
-              const x2 = 250 + 230 * Math.cos(endAngle);
-              const y2 = 250 + 230 * Math.sin(endAngle);
+              const radius = 230;
+              const x1 = 250 + radius * Math.cos(startAngle);
+              const y1 = 250 + radius * Math.sin(startAngle);
+              const x2 = 250 + radius * Math.cos(endAngle);
+              const y2 = 250 + radius * Math.sin(endAngle);
+
+              const largeArcFlag = endAngle - startAngle <= Math.PI ? "0" : "1";
+
+              const d = [
+                `M 250 250`,
+                `L ${x1} ${y1}`,
+                `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
+                `Z`
+              ].join(" ");
 
               return (
-                <polygon
+                <path
                   key={color.id}
-                  points={`250,250 ${x1},${y1} ${x2},${y2}`}
+                  d={d}
                   fill={color.name}
                   onClick={() => handleColorClick(color)}
                 />
