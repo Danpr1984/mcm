@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const { userImage } = useContext(AudioContext);
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, user } = useContext(AuthContext);
+  console.log(user);
 
   return (
     <nav className="h-[64px] border-gray-200 bg-indigo-700 dark:bg-gray-900">
@@ -21,6 +22,7 @@ const Navbar = () => {
           </span>
         </div>
         <div className="flex items-center space-x-3 rtl:space-x-reverse md:order-2 md:space-x-0">
+          <span className="me-1 capitalize text-white">{user?.username}</span>
           <button
             type="button"
             className="flex rounded-full bg-gray-800 text-sm focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 md:me-0"
@@ -122,6 +124,7 @@ const Navbar = () => {
                 Home
               </Link>
             </li>
+
             {isAuthenticated && (
               <li>
                 <Link

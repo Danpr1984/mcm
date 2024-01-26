@@ -63,6 +63,7 @@ export default function AuthContextProvider({ children }) {
 
       if (data.isAuthenticated) {
         setIsAuthenticated(true);
+        whoami();
       } else {
         setIsAuthenticated(false);
         await getCSRF();
