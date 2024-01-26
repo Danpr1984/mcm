@@ -1,5 +1,4 @@
 import { createContext, useEffect, useState } from "react";
-import Cookies from "js-cookie";
 import { setClientToken } from "../components/spotify";
 
 export const AuthContext = createContext({
@@ -16,7 +15,7 @@ export default function AuthContextProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [csrf, setCsrf] = useState("");
 
-  useEffect(() => {
+  const decodeSpotifyToken = () => {
     const token = window.localStorage.getItem("token");
     const hash = window.location.hash;
     window.location.hash = "";
@@ -29,7 +28,11 @@ export default function AuthContextProvider({ children }) {
       setSpotifyToken(token);
       setClientToken(token);
     }
-  }, [spotifyToken]);
+  };
+
+  useEffect(() => {
+    decodeSpotifyToken();
+  }, []);
 
   async function getCSRF() {
     try {
