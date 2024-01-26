@@ -1,6 +1,7 @@
 # Music Colour Wheel
 
-Project Description
+## Project Description
+Color Wheel Music is your personalized music experience, blending emotions with colors. Assign hues to songs based on your feelings, creating a unique color palette for your music library. Explore and discover new tracks by connecting with users who share similar emotional preferences. Dive into a world where music is not just heard but felt through the vibrant language of colors.
 
 ## Backend
 
