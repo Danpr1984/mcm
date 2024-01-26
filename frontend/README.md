@@ -1,8 +1,75 @@
-# React + Vite
+# Music Colour Wheel
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Project Description
 
-Currently, two official plugins are available:
+## Backend
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Prerequisites
+
+- Python (version x.x.x)
+- Pip (package installer for Python)
+
+### Getting Started
+
+1. Open a terminal and navigate to the "backend" folder:
+
+   ```bash
+   cd backend
+   ```
+
+2. Install the required Python packages:
+
+```
+pip install -r requirements.txt
+
+```
+
+3. Run the development server:
+
+```
+python manage.py runserver
+
+```
+
+The backend server should be running at http://localhost:8000/.
+
+## Frontend
+
+### Prerequisites
+
+- Node.js (version x.x.x)
+- npm (Node Package Manager)
+
+### Getting Started
+
+1. Open a terminal and navigate to the "frontend" folder:
+
+   ```bash
+   cd backend
+   ```
+
+2. Install the required Node.js packages:
+
+```
+npm install
+
+```
+
+3. Run the development server:
+
+```
+npm run dev
+
+```
+
+The frontend development server should be running at http://localhost:3000/.
+
+## Additional Information
+
+- **Spotify Token:** The Spotify token used in this project is linked to Daniel Porras.
+- **Admin Account:** An admin account is provided for testing purposes. Use the admin credentials for testing.
+
+### Admin Account
+
+- Username: admin
+- Password: ---known
