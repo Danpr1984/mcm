@@ -25,6 +25,9 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"Profile for {self.user.username}"
+    
+    class Meta:
+        app_label = 'backend.base'
 
 def create_user_profile(instance, created, *args, **kwargs):
     """
