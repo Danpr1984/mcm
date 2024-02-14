@@ -90,8 +90,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'color_wheel.wsgi.application'
 
 # Database
+
 DATABASES = {
-    'default': dj_database_url.config(default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'))
+    'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
 }
 
 REST_FRAMEWORK = {
