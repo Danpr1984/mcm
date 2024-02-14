@@ -27,7 +27,7 @@ class Profile(models.Model):
         return f"Profile for {self.user.username}"
     
     class Meta:
-        app_label = 'backend.base'
+        app_label = 'base'
 
 def create_user_profile(instance, created, *args, **kwargs):
     """
