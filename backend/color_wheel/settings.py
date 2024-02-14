@@ -15,7 +15,7 @@ import os  # Make sure you have this import
 import dj_database_url  # Import dj_database_url
 from pathlib import Path
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'otherkey')
+SECRET_KEY = os.environ.get('SECRET_KEY', '3#r@_+&-6m!0%$w2)4=q^5g*ucn+!3u!o#i@o!qz1^&f4v*v+0')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECRET_KEY = 'django-insecure-v&vm$exh*9*zhzfl5!^xwkn1z1jg(rsg!j1%(wg5k)0xv^(!j('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['music-colorwheel.herokuapp.com', 'localhost', '127.0.0.1']
 
@@ -38,8 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
-    'base',
-    
+    'base',    
 ]
 
 MIDDLEWARE = [
@@ -67,6 +66,11 @@ CSRF_TRUSTED_ORIGINS = [ "http://127.0.0.1:3000",'http://127.0.0.1:8000', "http:
 
 ROOT_URLCONF = 'color_wheel.urls'
 
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+]
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -85,10 +89,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'color_wheel.wsgi.application'
 
-# Database
-DATABASES = {
-    'default': dj_database_url.config(default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'))
-}
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL)
+    }
+else:
+    # Local SQLite configuration
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+# # Database
+# DATABASES = {
+#     'default': dj_database_url.config(default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'))
+# }
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -135,6 +154,7 @@ SESSION_COOKIE_HTTPONLY = True
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 
 
 # """
