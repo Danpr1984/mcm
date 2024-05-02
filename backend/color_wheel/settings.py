@@ -16,13 +16,9 @@ from pathlib import Path
 import dj_database_url  # Import dj_database_url
 from datetime import timedelta
 
-<<<<<<< HEAD
 
 if os.path.exists('env.py'):
     import env
-=======
-SECRET_KEY = os.environ.get('SECRET_KEY', '3#r@_+&-6m!0%$w2)4=q^5g*ucn+!3u!o#i@o!qz1^&f4v*v+0')
->>>>>>> f876669633965e3077e8e7ce49e8716881323a65
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -83,7 +79,6 @@ CSRF_TRUSTED_ORIGINS = [ "https://musiccolourwheel.netlify.app",'http://127.0.0.
 
 ROOT_URLCONF = 'color_wheel.urls'
 
-<<<<<<< HEAD
 WSGI_APPLICATION = 'color_wheel.wsgi.application'
 
 
@@ -106,49 +101,6 @@ else:
 #     'DEFAULT_AUTHENTICATION_CLASSES': [
 #         'rest_framework.authentication.SessionAuthentication',
 #     ]
-=======
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",
-]
-
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
-
-WSGI_APPLICATION = 'color_wheel.wsgi.application'
-
-DATABASE_URL = os.environ.get('DATABASE_URL')
-
-if DATABASE_URL:
-    DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL)
-    }
-else:
-    # Local SQLite configuration
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-
-# # Database
-# DATABASES = {
-#     'default': dj_database_url.config(default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'))
->>>>>>> f876669633965e3077e8e7ce49e8716881323a65
 # }
 
 REST_FRAMEWORK = {
@@ -235,12 +187,6 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-<<<<<<< HEAD
-=======
-
-# """
-# Django settings for color_wheel project.
->>>>>>> f876669633965e3077e8e7ce49e8716881323a65
 
 TEMPLATES = [
     {
