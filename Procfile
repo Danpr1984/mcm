@@ -1,1 +1,1 @@
-web: gunicorn --preload backend.color_wheel.wsgi:application
+web: gunicorn color_wheel.wsgi:application
